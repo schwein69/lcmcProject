@@ -1,0 +1,39 @@
+push 0
+push function0
+lfp /* Control link creata*/
+push 5
+push 3
+lfp/*carico access link (guarda file in layout di una funzione(sopra))*/
+stm/*carico access link (guarda file in layout di una funzione(sopra))*/
+ltm/*carico access link (guarda file in layout di una funzione(sopra))*/
+ltm/*salto*/
+push -2/*salto al posto dove ho messo la funzione*/
+add
+lw/*carico la funzione (l'indirizzo)*/
+js/*salto in function0*/
+print
+halt
+
+function0:
+cfp/*setto frame pointer*/
+lra/*carico return address*/
+lfp/*lettura i(idnode)*/
+push 1/*lettura i*/
+add/*lettura i*/
+lw/*lettura i e carico nello stack*/
+lfp/*lettura j*(idnode)/
+push 2/*lettura j*/
+add/*lettura ij/
+lw/*lettura j e metto nello stack*/
+add
+stm/*salvo il risultato*/
+
+sra/*guardare functionNode*/
+pop
+pop
+pop
+
+sfp
+ltm
+lra/*salto all'indietro(in print)*/
+js

@@ -1,0 +1,25 @@
+LAYOUT AR DI UNA FUNZIONE(dentro la funzione, cioè locale) : (STACK CRESCE VERSO IL BASSO!) (la slide di control link, ecc...)
+
+CL:address (fp) di AR chiamante
+valore ultimo (m-esimo) parametro         [offset m]
+.
+.
+valore primo parametro                    [offset   1]   
+AL:address (fp) di AR della dichiarazione(della funzione)	<- $fp in codice body della funz
+Return Address                           
+valore/addr prima var/funz dichiarata     	 [offset -2]
+valore/addr seconda var/funz              	 [offset -3]
+.
+.
+valore/addr ultima (n-esima) var/funz     	 [offset -(n+1)] 
+------------------------------------
+
+LAYOUT AD AMBIENTE GLOBALE, LAYOUT SUO AR: (STACK CRESCE VERSO IL BASSO!)
+
+[BASE DELLO STACK E' QUI SOTTO]  <- $fp (settato a valore iniziale di $sp)
+RETURN ADDRESS 0 (fittizio, per avere gli offset uniformi)(si va in halt)
+valore/addr prima var/funzione dichiarata      [offset -2]
+valore/addr seconda var/funzione               [offset -3]
+.
+.
+valore/addr ultima funz (n-esima) var         [offset -(n+1)] 
