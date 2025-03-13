@@ -1,0 +1,21 @@
+un lexer che includa i seguenti token
+(in ordine di priorità, da quello a priorità più alta a quello a prorità
+più bassa)
+
+VISITA DEL SYNTAX TREE TRAMITE VISITOR PATTERN
+
+Possiamo calcolare il risultato di una espressione visitando il relativo albero 
+sintattico, che ANTLR4 genera esplicitamente come un albero di oggetti 
+(facendo preliminarmente tasto destro sul file .g4 -> CONFIGURE ANTLR... ->
+spunta su "generate parse tree visitor"). 
+Ogni nodo interno dell'albero è di classe "XxxContext" dove "xxx" è il nome di 
+una variabile della grammatica (l'iniziale è resa maiuscola). 
+
+In ANTLR4, inoltre, è possibile dare un nome a ciascuna produzione di una 
+variabile (es. "exp") tramite un tag #nome. 
+
+
+
+FOOL -> SINTASSI
+AST  -> ABSTRACT SYNTAX TREE
+BASEASTVISITOR -> VISITOR OF ABS 
