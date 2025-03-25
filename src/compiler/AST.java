@@ -253,6 +253,13 @@ public class AST {
 
     /*TODO Nuova grammatica*/
     public static class GreaterEqualNode extends TypeNode {
+        Node left;
+        Node right;
+
+        GreaterEqualNode(Node l, Node r) {
+            left = l;
+            right = r;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -261,6 +268,13 @@ public class AST {
     }
 
     public static class LessEqualNode extends TypeNode {
+        Node left;
+        Node right;
+
+        LessEqualNode(Node l, Node r) {
+            left = l;
+            right = r;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -269,6 +283,11 @@ public class AST {
     }
 
     public static class NotNode extends TypeNode {
+        Node exp;
+
+        NotNode(Node e) {
+            exp = e;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -277,6 +296,13 @@ public class AST {
     }
 
     public static class MinusNode extends TypeNode {
+        Node left;
+        Node right;
+
+        MinusNode(Node l, Node r) {
+            left = l;
+            right = r;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -285,6 +311,13 @@ public class AST {
     }
 
     public static class OrNode extends TypeNode {
+        Node left;
+        Node right;
+
+        OrNode(Node l, Node r) {
+            left = l;
+            right = r;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -293,6 +326,13 @@ public class AST {
     }
 
     public static class DivNode extends TypeNode {
+        Node left;
+        Node right;
+
+        DivNode(Node l, Node r) {
+            left = l;
+            right = r;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -301,6 +341,13 @@ public class AST {
     }
 
     public static class AndNode extends TypeNode {
+        Node left;
+        Node right;
+
+        AndNode(Node l, Node r) {
+            left = l;
+            right = r;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -310,6 +357,15 @@ public class AST {
 
     /*TODO OBJECT ORIENTED*/
     public static class ClassNode extends TypeNode {
+        String id;
+        List<FieldNode> fields;
+        List<MethodNode> methods;
+
+        ClassNode(String i, List<FieldNode> f, List<MethodNode> m) {
+            id = i;
+            fields = f;
+            methods = m;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -318,6 +374,13 @@ public class AST {
     }
 
     public static class FieldNode extends TypeNode {
+        String fieldId;
+        TypeNode node;
+
+        FieldNode(String id, TypeNode type) {
+            fieldId = id;
+            node = type;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -326,6 +389,17 @@ public class AST {
     }
 
     public static class MethodNode extends TypeNode {
+        String id;
+        TypeNode retType;
+        List<ParNode> parameters;
+        List<Node> body;
+
+        MethodNode(String i, TypeNode rt, List<ParNode> p, List<Node> b) {
+            id = i;
+            retType = rt;
+            parameters = p;
+            body = b;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -334,6 +408,15 @@ public class AST {
     }
 
     public static class ClassCallNode extends TypeNode {
+        String className;
+        String methodName;
+        List<Node> args;
+
+        ClassCallNode(String c, String m, List<Node> a) {
+            className = c;
+            methodName = m;
+            args = a;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -342,6 +425,13 @@ public class AST {
     }
 
     public static class NewNode extends TypeNode {
+        String nodeName;
+        List<Node> args;
+
+        NewNode(String newNodeName, List<Node> argsNode) {
+            nodeName = newNodeName;
+            args = argsNode;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -358,6 +448,11 @@ public class AST {
     }
 
     public static class ClassTypeNode extends TypeNode {
+        String className;
+
+        ClassTypeNode(String c) {
+            className = c;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -366,6 +461,11 @@ public class AST {
     }
 
     public static class RefTypeNode extends TypeNode {
+        String className;
+
+        RefTypeNode(String c) {
+            className = c;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
@@ -374,6 +474,11 @@ public class AST {
     }
 
     public static class EmptyTypeNode extends TypeNode {
+        String className;
+
+        EmptyTypeNode(String c) {
+            className = c;
+        }
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {
