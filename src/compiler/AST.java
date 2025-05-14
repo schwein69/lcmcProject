@@ -34,16 +34,15 @@ public class AST {
         }
     }
 
-    public static class FunNode extends Node {
+    public static class FunNode extends DecNode {
         String id;
-        TypeNode retType;
         List<ParNode> parlist;
         List<Node> declist;
         Node exp;
 
         FunNode(String i, TypeNode rt, List<ParNode> pl, List<Node> dl, Node e) {
+            super(rt);
             id = i;
-            retType = rt;
             parlist = pl;
             declist = dl;
             exp = e;
@@ -55,13 +54,12 @@ public class AST {
         }
     }
 
-    public static class ParNode extends Node {
+    public static class ParNode extends DecNode {
         String id;
-        TypeNode type;
 
         ParNode(String i, TypeNode t) {
+            super(t);
             id = i;
-            type = t;
         }
 
         @Override
@@ -70,14 +68,13 @@ public class AST {
         }
     }
 
-    public static class VarNode extends Node {
+    public static class VarNode extends DecNode {
         String id;
-        TypeNode type;
         Node exp;
 
         VarNode(String i, TypeNode t, Node v) {
+            super(t);
             id = i;
-            type = t;
             exp = v;
         }
 
@@ -164,7 +161,7 @@ public class AST {
 
     public static class CallNode extends Node {
         String id;
-        List<Node> arglist = new ArrayList<Node>();
+        List<Node> arglist;
         STentry entry;
         int nl;
 
@@ -361,6 +358,7 @@ public class AST {
         List<FieldNode> fields;
         List<MethodNode> methods;
 
+
         ClassNode(String i, List<FieldNode> f, List<MethodNode> m) {
             id = i;
             fields = f;
@@ -392,13 +390,16 @@ public class AST {
         String id;
         TypeNode retType;
         List<ParNode> parameters;
-        List<Node> body;
+        List<Node> declist;
+        Node exp;
 
-        MethodNode(String i, TypeNode rt, List<ParNode> p, List<Node> b) {
+
+        MethodNode(String i, TypeNode rt, List<ParNode> p, List<Node> b, Node e) {
             id = i;
             retType = rt;
             parameters = p;
-            body = b;
+            declist = b;
+            exp = e;
         }
 
         @Override
@@ -411,6 +412,7 @@ public class AST {
         String className;
         String methodName;
         List<Node> args;
+        STentry methodEntry;
 
         ClassCallNode(String c, String m, List<Node> a) {
             className = c;
@@ -449,6 +451,7 @@ public class AST {
 
     public static class ClassTypeNode extends TypeNode {
         String className;
+        STentry classEntry;
 
         ClassTypeNode(String c) {
             className = c;
@@ -461,10 +464,10 @@ public class AST {
     }
 
     public static class RefTypeNode extends TypeNode {
-        String className;
+        TypeNode innerType;
 
-        RefTypeNode(String c) {
-            className = c;
+        RefTypeNode(TypeNode ret) {
+            innerType = ret;
         }
 
         @Override
@@ -474,10 +477,7 @@ public class AST {
     }
 
     public static class EmptyTypeNode extends TypeNode {
-        String className;
-
-        EmptyTypeNode(String c) {
-            className = c;
+        EmptyTypeNode() {
         }
 
         @Override

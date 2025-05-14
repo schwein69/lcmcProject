@@ -8,7 +8,8 @@ public class TestASM {
     public static void main(String[] args) throws Exception {
      
         String fileName = "quicksort.fool.asm";
-                
+        //String fileName = "prova2punti.fool";
+
         CharStream charsASM = CharStreams.fromFileName(fileName);
         SVMLexer lexerASM = new SVMLexer(charsASM);
         CommonTokenStream tokensASM = new CommonTokenStream(lexerASM);
