@@ -249,7 +249,7 @@ public class AST {
     }
 
     /*TODO Nuova grammatica*/
-    public static class GreaterEqualNode extends TypeNode {
+    public static class GreaterEqualNode extends Node {
         Node left;
         Node right;
 
@@ -264,7 +264,7 @@ public class AST {
         }
     }
 
-    public static class LessEqualNode extends TypeNode {
+    public static class LessEqualNode extends Node {
         Node left;
         Node right;
 
@@ -279,7 +279,7 @@ public class AST {
         }
     }
 
-    public static class NotNode extends TypeNode {
+    public static class NotNode extends Node {
         Node exp;
 
         NotNode(Node e) {
@@ -292,7 +292,7 @@ public class AST {
         }
     }
 
-    public static class MinusNode extends TypeNode {
+    public static class MinusNode extends Node {
         Node left;
         Node right;
 
@@ -307,7 +307,7 @@ public class AST {
         }
     }
 
-    public static class OrNode extends TypeNode {
+    public static class OrNode extends Node {
         Node left;
         Node right;
 
@@ -322,7 +322,7 @@ public class AST {
         }
     }
 
-    public static class DivNode extends TypeNode {
+    public static class DivNode extends Node {
         Node left;
         Node right;
 
@@ -337,7 +337,7 @@ public class AST {
         }
     }
 
-    public static class AndNode extends TypeNode {
+    public static class AndNode extends Node {
         Node left;
         Node right;
 
@@ -353,13 +353,14 @@ public class AST {
     }
 
     /*TODO OBJECT ORIENTED*/
-    public static class ClassNode extends TypeNode {
+    public static class ClassNode extends DecNode {
         String id;
         List<FieldNode> fields;
         List<MethodNode> methods;
 
 
-        ClassNode(String i, List<FieldNode> f, List<MethodNode> m) {
+        ClassNode(String i, ClassTypeNode type, List<FieldNode> f, List<MethodNode> m) {
+            super(type);
             id = i;
             fields = f;
             methods = m;
@@ -371,13 +372,12 @@ public class AST {
         }
     }
 
-    public static class FieldNode extends TypeNode {
+    public static class FieldNode extends DecNode {
         String fieldId;
-        TypeNode node;
 
         FieldNode(String id, TypeNode type) {
+            super(type);
             fieldId = id;
-            node = type;
         }
 
         @Override
@@ -386,17 +386,16 @@ public class AST {
         }
     }
 
-    public static class MethodNode extends TypeNode {
+    public static class MethodNode extends DecNode {
         String id;
-        TypeNode retType;
         List<ParNode> parameters;
         List<Node> declist;
         Node exp;
 
 
-        MethodNode(String i, TypeNode rt, List<ParNode> p, List<Node> b, Node e) {
+        MethodNode(String i, TypeNode retType, List<ParNode> p, List<Node> b, Node e) {
+            super(retType);
             id = i;
-            retType = rt;
             parameters = p;
             declist = b;
             exp = e;
@@ -408,7 +407,7 @@ public class AST {
         }
     }
 
-    public static class ClassCallNode extends TypeNode {
+    public static class ClassCallNode extends Node {
         String className;
         String methodName;
         List<Node> args;
@@ -426,13 +425,14 @@ public class AST {
         }
     }
 
-    public static class NewNode extends TypeNode {
-        String nodeName;
+    public static class NewNode extends Node {
+        String className;
         List<Node> args;
+        STentry classEntry;
 
-        NewNode(String newNodeName, List<Node> argsNode) {
-            nodeName = newNodeName;
-            args = argsNode;
+        public NewNode(String className, List<Node> args) {
+            this.className = className;
+            this.args = args;
         }
 
         @Override
@@ -440,6 +440,7 @@ public class AST {
             return visitor.visitNode(this);
         }
     }
+
 
     public static class EmptyNode extends TypeNode {
 
@@ -451,11 +452,15 @@ public class AST {
 
     public static class ClassTypeNode extends TypeNode {
         String className;
-        STentry classEntry;
+        ArrayList<TypeNode> allFields;              // tipo dei campi
+        ArrayList<ArrowTypeNode> allMethods;        // tipo dei metodi
 
-        ClassTypeNode(String c) {
-            className = c;
+        ClassTypeNode(ArrayList<ArrowTypeNode> allMethods, ArrayList<TypeNode> allFields, String className) {
+            this.allMethods = allMethods;
+            this.allFields = allFields;
+            this.className = className;
         }
+
 
         @Override
         public <S, E extends Exception> S accept(BaseASTVisitor<S, E> visitor) throws E {

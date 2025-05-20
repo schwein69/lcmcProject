@@ -28,7 +28,7 @@ public class PrintEASTVisitor extends BaseEASTVisitor<Void, VoidException> {
     @Override
     public Void visitNode(FunNode n) {
         printNode(n, n.id);
-        visit(n.retType);
+        visit(n.getType());
         for (ParNode par : n.parlist) visit(par);
         for (Node dec : n.declist) visit(dec);
         visit(n.exp);
@@ -38,14 +38,14 @@ public class PrintEASTVisitor extends BaseEASTVisitor<Void, VoidException> {
     @Override
     public Void visitNode(ParNode n) {
         printNode(n, n.id);
-        visit(n.type);
+        visit(n.getType());
         return null;
     }
 
     @Override
     public Void visitNode(VarNode n) {
         printNode(n, n.id);
-        visit(n.type);
+        visit(n.getType());
         visit(n.exp);
         return null;
     }
@@ -157,6 +157,7 @@ public class PrintEASTVisitor extends BaseEASTVisitor<Void, VoidException> {
     @Override
     public Void visitNode(NotNode n) {
         printNode(n);
+        visit(n.exp);
         return null;
     }
 
@@ -192,7 +193,7 @@ public class PrintEASTVisitor extends BaseEASTVisitor<Void, VoidException> {
         return null;
     }
 
-//TODO object oriented
+    //TODO object oriented
     @Override
     public Void visitNode(ClassNode n) {
         printNode(n);
@@ -208,14 +209,14 @@ public class PrintEASTVisitor extends BaseEASTVisitor<Void, VoidException> {
     @Override
     public Void visitNode(FieldNode n) {
         printNode(n);
-        visit(n.node);
+        visit(n.getType());
         return null;
     }
 
     @Override
     public Void visitNode(MethodNode n) {
         printNode(n, n.id);
-        visit(n.retType);
+        visit(n.getType());
         for (ParNode param : n.parameters) {
             visit(param);
         }
@@ -236,20 +237,22 @@ public class PrintEASTVisitor extends BaseEASTVisitor<Void, VoidException> {
 
     @Override
     public Void visitNode(NewNode n) {
-
+        printNode(n, n.className);
+        visit(n.classEntry);
+        for (Node arg : n.args) visit(arg);
         return null;
     }
 
     @Override
     public Void visitNode(EmptyNode n) {
-
         return null;
     }
 
     @Override
     public Void visitNode(ClassTypeNode n) {
         printNode(n);
-        visit(n.classEntry);
+        for (Node arg : n.allFields) visit(arg);
+        for (Node arg : n.allMethods) visit(arg);
         return null;
     }
 
