@@ -388,8 +388,10 @@ public class AST {
 
     public static class MethodNode extends DecNode {
         String id;
+        String classId;
         List<ParNode> parameters;
         List<Node> declist;
+        int offset;
         Node exp;
 
 
@@ -411,6 +413,7 @@ public class AST {
         String className;
         String methodName;
         List<Node> args;
+        STentry classEntry;
         STentry methodEntry;
 
         ClassCallNode(String c, String m, List<Node> a) {
