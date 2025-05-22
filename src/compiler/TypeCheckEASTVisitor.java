@@ -131,11 +131,14 @@ public class TypeCheckEASTVisitor extends BaseEASTVisitor<TypeNode, TypeExceptio
         return at.ret;
     }
 
+    //Per le variabili
     @Override
     public TypeNode visitNode(IdNode n) throws TypeException {
         if (print) printNode(n, n.id);
         TypeNode t = visit(n.entry); // STentry visit
         if (t instanceof ArrowTypeNode)
+            throw new TypeException("Wrong usage of function identifier " + n.id, n.getLine());
+        if (t instanceof ClassTypeNode)
             throw new TypeException("Wrong usage of function identifier " + n.id, n.getLine());
         return t;
     }
@@ -264,9 +267,6 @@ public class TypeCheckEASTVisitor extends BaseEASTVisitor<TypeNode, TypeExceptio
     @Override
     public TypeNode visitNode(ClassNode n) throws TypeException {
         if (print) printNode(n);
-        for (FieldNode f : n.fields) {
-            visit(f);
-        }
         for (MethodNode m : n.methods) {
             visit(m);
         }
@@ -274,21 +274,16 @@ public class TypeCheckEASTVisitor extends BaseEASTVisitor<TypeNode, TypeExceptio
     }
 
     @Override
-    public TypeNode visitNode(FieldNode n) throws TypeException {
-        if (print) printNode(n);
-        visit(n.getType());
-        return null;
-    }
-
-    @Override
     public TypeNode visitNode(MethodNode n) throws TypeException {
         if (print) printNode(n, n.id);
         visit(n.getType());
-        for (ParNode p : n.parameters) {
-            visit(p);
-        }
         for (Node d : n.declist) {
-            visit(d);
+            try {
+                visit(d);
+            } catch (IncomplException _) {
+            } catch (TypeException e) {
+                System.out.println("Type checking error in a declaration of method: " + e.text);
+            }
         }
         TypeNode retType = visit(n.exp);
         if (!isSubtype(retType, ckvisit(n.getType()))) {
@@ -315,6 +310,7 @@ public class TypeCheckEASTVisitor extends BaseEASTVisitor<TypeNode, TypeExceptio
         }
         return at.ret;
     }
+
 
     @Override
     public TypeNode visitNode(NewNode n) throws TypeException {
