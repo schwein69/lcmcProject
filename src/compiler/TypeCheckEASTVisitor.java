@@ -329,26 +329,24 @@ public class TypeCheckEASTVisitor extends BaseEASTVisitor<TypeNode, TypeExceptio
                 throw new TypeException("Wrong type for " + (i + 1) + "-th parameter in constructor of class " + n.className, n.getLine());
             }
         }
-        return t; // The type of new is the class type
+        return new RefTypeNode(n.className);
     }
 
     @Override
     public TypeNode visitNode(EmptyNode n) {
-        return null;
+        if (print) printNode(n,"empty node");
+        return new EmptyTypeNode();
     }
 
     @Override
     public TypeNode visitNode(ClassTypeNode n) throws TypeException {
         if (print) printNode(n);
-        for (Node f : n.allFields) visit(f);
-        for (Node m : n.allMethods) visit(m);
         return null;
     }
 
     @Override
     public TypeNode visitNode(RefTypeNode n) throws TypeException {
         if (print) printNode(n);
-        visit(n.innerType, "->");
         return null;
     }
 

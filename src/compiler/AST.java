@@ -472,10 +472,10 @@ public class AST {
     }
 
     public static class RefTypeNode extends TypeNode {
-        TypeNode innerType;
+        String className;
 
-        RefTypeNode(TypeNode ret) {
-            innerType = ret;
+        RefTypeNode(String className) {
+            className = className;
         }
 
         @Override
