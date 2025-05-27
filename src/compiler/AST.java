@@ -393,6 +393,7 @@ public class AST {
         List<Node> declist;
         int offset;
         Node exp;
+        String label;
 
 
         MethodNode(String i, TypeNode retType, List<ParNode> p, List<Node> b, Node e) {
@@ -410,6 +411,7 @@ public class AST {
     }
 
     public static class ClassCallNode extends Node {
+        int nl;
         String className;
         String methodName;
         List<Node> args;

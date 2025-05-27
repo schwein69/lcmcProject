@@ -7,7 +7,7 @@ import java.util.HashMap;
 @lexer::members {
 int lexicalErrors=0;
 }
-// dentro il file SVMParser che mi genere automaticamente, in pratica qui definisco lo spazio memoria
+// dentro il file SVMParser che mi genera automaticamente, in pratica qui definisco lo spazio memoria
 //spazio memoria per contenere il codice, lo riempo nel parser in TestASM
 // indirizzo da cui inizio, cioè inizio da 0
 @parser::members {

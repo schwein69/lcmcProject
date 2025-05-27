@@ -346,7 +346,6 @@ public class SymbolTableASTVisitor extends BaseASTVisitor<Void, VoidException> {
     @Override
     public Void visitNode(ClassCallNode n) {
         if (print) printNode(n);
-
         // Cerca l'entry di ID1 (oggetto)
         STentry objectEntry = null;
         for (int i = nestingLevel; i >= 0 && objectEntry == null; i--) {
@@ -382,6 +381,7 @@ public class SymbolTableASTVisitor extends BaseASTVisitor<Void, VoidException> {
             return null;
         }
         n.methodEntry = methodEntry;
+        n.nl = nestingLevel;
 
         // Visita gli argomenti
         for (Node arg : n.args) {
