@@ -55,7 +55,7 @@ public class Test {
     	if ( frontEndErrors > 0) System.exit(1);    //se non ci sono errori dal compilatore, evito di visitare di nuovo, posso visitare direttamente gli entry
 
     	System.out.println("Generating code.");
-    	String code = new CodeGenerationASTVisitor().visit(ast);
+    	String code = new CodeGenerationASTVisitor(true).visit(ast);
     	BufferedWriter out = new BufferedWriter(new FileWriter(fileName+".asm"));
     	out.write(code);
     	out.close();

@@ -197,7 +197,8 @@ public class SymbolTableASTVisitor extends BaseASTVisitor<Void, VoidException> {
 
     @Override
     public Void visitNode(NotNode n) {
-        if (print) printNode(n);
+        if (print) printNode(n, n.exp.toString());
+        visit(n.exp);
         return null;
     }
 
@@ -240,8 +241,8 @@ public class SymbolTableASTVisitor extends BaseASTVisitor<Void, VoidException> {
         Map<String, STentry> currentLevelMap = symTable.get(nestingLevel);
 
         //  Costruzione iniziale di ClassTypeNode (con liste vuote)
-        ArrayList<ArrowTypeNode> methodTypes = new ArrayList<>();
-        ArrayList<TypeNode> fieldTypes = new ArrayList<>();
+        ArrayList<ArrowTypeNode> methodTypes = new ArrayList<>(Collections.nCopies(n.methods.size(), null));
+        ArrayList<TypeNode> fieldTypes = new ArrayList<>(Collections.nCopies(n.fields.size(), null));
 
         //  Gestione campi (solo raccolta dei tipi per ClassTypeNode)
         for (FieldNode f : n.fields) {

@@ -1,10 +1,10 @@
 let
-  var x:int = 10;
+  var x:int = 6;
   var y:int = 5;
   fun g:bool (b:bool)
      if b then { x == y } else { !(x >= y) };
 in
-  print ( if ( x >= y )
-        then { x }
-        else { g( true ) } );
+  print ( if ( x <= y )
+        then { (x) }
+        else { g( false ) } );
 

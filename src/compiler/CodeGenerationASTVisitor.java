@@ -211,45 +211,153 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
         return nlJoin(visit(n.left), visit(n.right), "add");
     }
 
+    @Override
+    public String visitNode(GreaterEqualNode n) {
+        if (print) printNode(n);
+        String l1 = freshLabel();
+        String l2 = freshLabel();
+        return nlJoin(
+                visit(n.right),
+                visit(n.left), // a>=b -> b <= a
+                "sub",           // calcola right - left
+                "push 0",
+                "bleq " + l1,     // se >= 0 salta a l1 (right >= left)
+                "push 0",        // false
+                "b " + l2,
+                l1 + ":",
+                "push 1",        // true
+                l2 + ":"
+        );
+    }
+
+    @Override
+    public String visitNode(LessEqualNode n) {
+        if (print) printNode(n);
+        // a <= b --> b >= a (scambia left e right)
+        String l1 = freshLabel();
+        String l2 = freshLabel();
+        return nlJoin(
+                visit(n.left),
+                visit(n.right),
+                "sub",
+                "push 0",
+                "bleq " + l1,
+                "push 0",
+                "b " + l2,
+                l1 + ":",
+                "push 1",
+                l2 + ":"
+        );
+    }
+
+    @Override
+    public String visitNode(NotNode n) {
+        if (print) printNode(n);
+        return nlJoin(
+                "push 1",          // NOT(x) = 1 - x
+                visit(n.exp),      // calcola valore dell'espressione
+                "sub"              // top = 1 - x (se x=1 → 0, se x=0 → 1)
+        );
+    }
+
+
+    @Override
+    public String visitNode(MinusNode n) {
+        if (print) printNode(n);
+        return nlJoin(
+                visit(n.left),
+                visit(n.right),
+                "sub"
+        );
+    }
+
+    @Override
+    public String visitNode(OrNode n) {
+        if (print) printNode(n);
+        String l1 = freshLabel();
+        String l2 = freshLabel();
+        return nlJoin(
+                visit(n.left),
+                "push 1",
+                "beq " + l1,       // se left == 1 true subito
+                visit(n.right),
+                "push 1",
+                "beq " + l1,       // se right == 1 true
+                "push 0",          // false
+                "b " + l2,
+                l1 + ":",
+                "push 1",          // true
+                l2 + ":"
+        );
+    }
+
+    @Override
+    public String visitNode(DivNode n) {
+        if (print) printNode(n);
+        return nlJoin(
+                visit(n.left),
+                visit(n.right),
+                "div"
+        );
+    }
+
+    @Override
+    public String visitNode(AndNode n) {
+        if (print) printNode(n);
+        String l1 = freshLabel();
+        String l2 = freshLabel();
+        // short-circuit AND
+        return nlJoin(
+                visit(n.left),
+                "push 0",
+                "beq " + l1,        // se left == 0 false subito
+                visit(n.right),
+                "push 0",
+                "beq " + l1,        // se right == 0 false
+                "push 1",           // true
+                "b " + l2,
+                l1 + ":",
+                "push 0",           // false
+                l2 + ":"
+        );
+    }
+
+
     //TODO da debuggare per capire
     @Override
     public String visitNode(CallNode n) {
         if (print) printNode(n, n.id);
-//		for (Node arg : n.arglist) visit(arg);
-        if (n.entry.offset >= 0) {
-            String getAR = null;
-            for (int i = 0; i < n.nl - n.entry.nl; i++)
-                getAR = nlJoin(getAR, "lw");// fa la differenza (#TODO guarda g==y)
-            String argCode = null;
-            for (int i = n.arglist.size() - 1; i >= 0; i--) argCode = nlJoin(argCode, visit(n.arglist.get(i)));
+        String getAR = null;
+        for (int i = 0; i < n.nl - n.entry.nl; i++)
+            getAR = nlJoin(getAR, "lw");// fa la differenza (#TODO guarda g==y)
+        String argCode = null;
+        for (int i = n.arglist.size() - 1; i >= 0; i--) argCode = nlJoin(argCode, visit(n.arglist.get(i)));
+        if (n.entry.offset >= 0) { // funzione.metodo obj.f()
             return nlJoin(
-                    "lfp", //metto nello stack il frame point, ho gia sistemato il control link(guarda filetxt), allocazione/visita par inverso !
+                    "lfp",   // Salva il frame pointer attuale (Access Link del chiamante)
+                    argCode,       // Valuta gli argomenti e mettili sullo stack
+                    "lfp", getAR,  // Risali nella catena statica fino al frame giusto (contiene il puntatore all’oggetto)
+                    "stm",         // Salva in $tm il puntatore all’oggetto (per duplicarlo)
+                    "ltm",         // Prima lettura dell’object pointer (Access Link)
+                    "ltm",         // Seconda lettura: duplicato (serve per calcolare offset)
+                    "lw",          // Carica il dispatch pointer dall’oggetto
+                    "push " + n.entry.offset, // Offset del metodo nella dispatch table
+                    "add",         // Somma per ottenere indirizzo del metodo
+                    "lw",          // Carica indirizzo del metodo
+                    "js"           // Salta al metodo
+            );
+        } else {// funzione normale f(x)
+            return nlJoin(
+                    "lfp", //metto nello stack il frame point, ho gia sistemato il control link(guarda filetxt), allocazione/visita par inverso ! Posizione attuale
                     argCode,
-                    "lfp", getAR,// retrieve address of frame (containing "id" declaration)  // by following the static chain (of Access Links)
+                    "lfp", getAR,// retrieve address of frame (containing "id" declaration)  // by following the static chain (of Access Links) -> vado a cercarlo
                     "stm",  // set $tm to popped value (with the aim of duplicating top of stack)
                     "ltm",  // load Access Link (pointer to frame of function "id" declaration)
                     "ltm",  // duplicate top of stack //devo duplicare lo stack, la prima volta metto la seconda volta access link(perchè potrebbe essere consumato boh)
                     "push " + n.entry.offset, "add",// compute address of "id" declaration // leggo 2 volte per offset
                     "lw", // load address of "id" function
-                    "js"); // jump to popped address (saving address of subsequent instruction in $ra)
-        } else {
-            String getAR = null;
-            for (int i = 0; i < n.nl - n.entry.nl; i++)
-                getAR = nlJoin(getAR, "lw");// fa la differenza (#TODO guarda g==y)
-            String argCode = null;
-            for (int i = n.arglist.size() - 1; i >= 0; i--) argCode = nlJoin(argCode, visit(n.arglist.get(i)));
-            return nlJoin(
-                    "lfp", //metto nello stack il frame point, ho gia sistemato il control link(guarda filetxt), allocazione/visita par inverso !
-                    argCode,
-                    "lfp", getAR,// retrieve address of frame (containing "id" declaration)  // by following the static chain (of Access Links)
-                    "stm",  // set $tm to popped value (with the aim of duplicating top of stack)
-                    "ltm",  // load Access Link (pointer to frame of function "id" declaration)
-                    "ltm",  // duplicate top of stack //devo duplicare lo stack, la prima volta metto la seconda volta access link(perchè potrebbe essere consumato boh)
-                    "push " + n.entry.offset, "add",// compute address of "id" declaration // leggo 2 volte per offset
-                    "lw", // load address of "id" function
-                    "js"); // jump to popped address (saving address of subsequent instruction in $ra)
+                    "js"); // jump to popped address (saving address of subsequent instruction in $ra);
         }
-
     }
 
     @Override
@@ -320,7 +428,7 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
 
     @Override
     public String visitNode(ParNode n) {
-        if (print) printNode(n, n.toString());
+        if (print) printNode(n, n.id);
         return "push " + n.id;
     }
 
