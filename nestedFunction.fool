@@ -1,0 +1,10 @@
+let
+        fun outer: int()
+        let
+        fun mid: int()
+        let
+        fun inner: int()
+        42;
+        in inner();
+        in mid();
+        in print( outer());

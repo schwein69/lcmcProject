@@ -36,16 +36,25 @@ public class AST {
 
     public static class FunNode extends DecNode {
         String id;
-        List<ParNode> parlist;
-        List<Node> declist;
+        ArrayList<ParNode> parlist;
+        ArrayList<DecNode> declist;
         Node exp;
+        Node symType;
 
-        FunNode(String i, TypeNode rt, List<ParNode> pl, List<Node> dl, Node e) {
+        FunNode(String i, TypeNode rt, ArrayList<ParNode> pl, ArrayList<DecNode> dl, Node e) {
             super(rt);
             id = i;
             parlist = pl;
             declist = dl;
             exp = e;
+        }
+
+        public void setSymType(Node symType) {
+            this.symType = symType;
+        }
+
+        public Node getSymType() {
+            return symType;
         }
 
         @Override
@@ -161,13 +170,13 @@ public class AST {
 
     public static class CallNode extends Node {
         String id;
-        List<Node> arglist;
+        ArrayList<Node> parlist;
         STentry entry;
         int nl;
 
-        CallNode(String i, List<Node> p) {
+        CallNode(String i, ArrayList<Node> p) {
             id = i;
-            arglist = p;
+            parlist = p;
         }
 
         @Override
@@ -218,12 +227,16 @@ public class AST {
     }
 
     public static class ArrowTypeNode extends TypeNode {
-        List<TypeNode> parlist;
-        TypeNode ret;
+        public ArrayList<TypeNode> parlist;
+        public TypeNode ret;
 
-        ArrowTypeNode(List<TypeNode> p, TypeNode r) {
+        ArrowTypeNode(ArrayList<TypeNode> p, TypeNode r) {
             parlist = p;
             ret = r;
+        }
+
+        public TypeNode getRet() {
+            return ret;
         }
 
         @Override
@@ -247,6 +260,7 @@ public class AST {
             return visitor.visitNode(this);
         }
     }
+
 
     /*TODO Nuova grammatica*/
     public static class GreaterEqualNode extends Node {
@@ -374,6 +388,7 @@ public class AST {
 
     public static class FieldNode extends DecNode {
         String fieldId;
+        int offset;
 
         FieldNode(String id, TypeNode type) {
             super(type);
@@ -390,13 +405,13 @@ public class AST {
         String id;
         String classId;
         List<ParNode> parameters;
-        List<Node> declist;
+        List<DecNode> declist;
         int offset;
         Node exp;
         String label;
 
 
-        MethodNode(String i, TypeNode retType, List<ParNode> p, List<Node> b, Node e) {
+        MethodNode(String i, TypeNode retType, List<ParNode> p, List<DecNode> b, Node e) {
             super(retType);
             id = i;
             parameters = p;
@@ -434,10 +449,20 @@ public class AST {
         String className;
         List<Node> args;
         STentry classEntry;
+        int nestingLevel;
+        TypeNode type;
 
         public NewNode(String className, List<Node> args) {
             this.className = className;
             this.args = args;
+        }
+
+        public TypeNode getType() {
+            return type;
+        }
+
+        public void setType(TypeNode type) {
+            this.type = type;
         }
 
         @Override
@@ -477,7 +502,7 @@ public class AST {
         String className;
 
         RefTypeNode(String className) {
-            className = className;
+            this.className = className;
         }
 
         @Override

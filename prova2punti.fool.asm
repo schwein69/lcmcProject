@@ -1,92 +1,113 @@
 push 0
 push 6
-push 5
+push 7
+lfp
 push function0
-lfp
 push -2
+lfp
 add
 lw
-lfp
 push -3
+lfp
 add
 lw
-sub
+bleq label11
 push 0
-bleq label8
-push 0
-b label9
-label8:
+b label12
+label11:
 push 1
-label9:
+label12:
 push 1
-beq label6
+beq label9
 lfp
 push 0
-lfp
-stm
-ltm
-ltm
 push -4
+lfp
+add
+lw
+push -5
+lfp
 add
 lw
 js
-b label7
-label6:
-lfp
+b label10
+label9:
 push -2
+lfp
 add
 lw
-label7:
+label10:
 print
 halt
+
 
 function0:
 cfp
 lra
-lfp
+
 push 1
+lfp
 add
 lw
 push 1
 beq label0
-push 1
+push -2
 lfp
+lw
+add
 lw
 push -3
-add
-lw
 lfp
 lw
-push -2
 add
 lw
-sub
-push 0
-bleq label2
-push 0
-b label3
-label2:
+bleq label4
 push 1
+b label6
+label4:
+push -2
+lfp
+lw
+add
+lw
+push -3
+lfp
+lw
+add
+lw
+beq label5
+push 0
+b label6
+label5:
+push 1
+label6:
+push 1
+beq
+label2
+push 1
+b
+label3
+label2:
+push 0
 label3:
-sub
 b label1
 label0:
-lfp
-lw
 push -2
-add
-lw
 lfp
+lw
+add
 lw
 push -3
+lfp
+lw
 add
 lw
-beq label4
+beq label7
 push 0
-b label5
-label4:
+b label8
+label7:
 push 1
-label5:
+label8:
 label1:
 stm
 

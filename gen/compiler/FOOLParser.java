@@ -35,7 +35,7 @@ public class FOOLParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'+'", "'-'", "'*'", "'/'", "'('", "')'", "'{'", "'}'", "';'", 
-			"':'", "','", "'.'", "'||'", "'&&'", "'!'", "'>='", "'<='", "'=='", "'='", 
+			"':'", "','", "'.'", "'||'", "'&&'", null, "'>='", "'<='", "'=='", "'='", 
 			"'true'", "'false'", "'if'", "'then'", "'else'", "'print'", "'let'", 
 			"'in'", "'var'", "'fun'", "'class'", "'extends'", "'new'", "'null'", 
 			"'int'", "'bool'"
