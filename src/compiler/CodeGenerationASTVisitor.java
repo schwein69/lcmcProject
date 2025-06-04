@@ -41,8 +41,8 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
     @Override
     public String visitNode(FunNode n) {
         if (print) printNode(n, n.id);
-        System.out.println("SONO QUIIIIII " + n.id + " type " + n.declist);
-        System.out.println("IM VISITING DECLIST " + n.declist + " n symtype" + n.getSymType());
+        //System.out.println("SONO QUIIIIII " + n.id + " type " + n.declist);
+        //System.out.println("IM VISITING DECLIST " + n.declist + " n symtype" + n.getSymType());
         int popDecSize = 0;
         int popParSize = 0;
         for (ParNode par : n.parlist) visit(par); //numero di parametri da rimuovere
@@ -72,7 +72,7 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
         ;//visit(dec);//numero di valori da rimuovere #TODO nella funzione devo disallocare
         String bodyexp = visit(n.exp);
         String funl = freshFunLabel();
-        System.out.println("FUNNODE LABEL " + funl + "TYPE" + n.getType() + " DECLIST " + n.declist.size() + " Calculated size " + popDecSize);
+        //System.out.println("FUNNODE LABEL " + funl + "TYPE" + n.getType() + " DECLIST " + n.declist.size() + " Calculated size " + popDecSize);
 
         putCode(
                 nlJoin(//TODO debbugare per capire
@@ -102,7 +102,7 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
 
         // Genera una label unica per questo metodo
         String methodLabel = freshFunLabel();
-        System.out.println("Method LABEL: " + n.id + " " + methodLabel);
+        //System.out.println("Method LABEL: " + n.id + " " + methodLabel);
 
         n.label = methodLabel;  // salva la label nel nodo
 
@@ -117,7 +117,7 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
 
         // Genera codice corpo del metodo
         String bodyCode = visit(n.exp);
-        System.out.println("METHOD LABEL WITH DEC SIZE " + n.declist.size());
+        //System.out.println("METHOD LABEL WITH DEC SIZE " + n.declist.size());
         // Montaggio del codice come per FunNode
         String methodCode = nlJoin(
                 methodLabel + ":",       // Etichetta del metodo
@@ -573,7 +573,7 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
         String argCode = null;
 
         for (int i = 0; i < n.args.size(); i++) {
-            System.out.println("parametri " + i + " " + n.args.get(i));
+            //System.out.println("parametri " + i + " " + n.args.get(i));
             argCode = nlJoin(argCode, visit(n.args.get(i)));
         }
 
